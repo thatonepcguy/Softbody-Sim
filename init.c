@@ -39,7 +39,7 @@ void initSpringBlock(int rows, int cols, float spacing, float dampCoef, float st
             }
             if (c < cols-1 && r < rows-1) {
                 springs[si].dampCoef = dampCoef;
-                springs[si].restLength = spacing;
+                springs[si].restLength = sqrtf(spacing*spacing + spacing*spacing);
                 springs[si].stiffness = stiffness;
                 springs[si].node1 = &nodes[i];
                 springs[si].node2 = &nodes[(r+1) * cols + (c+1)];
@@ -47,7 +47,7 @@ void initSpringBlock(int rows, int cols, float spacing, float dampCoef, float st
             }
             if (c > 0 && r < rows-1) {
                 springs[si].dampCoef = dampCoef;
-                springs[si].restLength = spacing;
+                springs[si].restLength = sqrtf(spacing*spacing + spacing*spacing);
                 springs[si].stiffness = stiffness;
                 springs[si].node1 = &nodes[i];
                 springs[si].node2 = &nodes[(r+1) * cols + (c-1)];
