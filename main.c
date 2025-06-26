@@ -23,15 +23,14 @@ int main (int argc, char *argv[]) {
 
     // SOFTBODY 1
     
-    unsigned int softbodyCount = 2;
+    unsigned int softbodyCount = 3;
     softbody_t *softbodies;
     
     softbodies = malloc(sizeof(softbody_t)*softbodyCount);
     
-    initSoftbody(softbodies, 0, 5, 10, 20, 300, 300, DAMP_COEF, STIFFNESS, (vector3I_t){255, 100, 255});
-    initSoftbody(softbodies, 1, 5, 10, 20, 250, 100, DAMP_COEF, STIFFNESS, (vector3I_t){255, 255, 100});
-
-    softbodies[0].nodes[0].fixed = true;
+    initSoftbody(softbodies, 0, 5, 10, 20, 300, 600, DAMP_COEF, STIFFNESS, (vector3I_t){100, 255, 255});
+    initSoftbody(softbodies, 1, 5, 10, 20, 300, 400, DAMP_COEF, STIFFNESS, (vector3I_t){255, 100, 255});
+    initSoftbody(softbodies, 2, 5, 10, 20, 300, 200, DAMP_COEF, STIFFNESS, (vector3I_t){255, 255, 100});
     
     bool close = 0;
     while (!close) {
@@ -41,6 +40,18 @@ int main (int argc, char *argv[]) {
                 case SDL_QUIT:
                     close = 1;
                     break;
+            }
+        }
+
+        // CHECK FOR INSIDE BOUNDING BOX
+        for (int i = 0; i < softbodyCount; i++) {
+            for (int j = 0; j < softbodyCount; j++) {
+                if ((softbodies[i].boundingBoxTopLeft.x < softbodies[j].boundingBoxBtmRight.x &&
+                    softbodies[i].boundingBoxBtmRight.x > softbodies[j].boundingBoxTopLeft.x &&
+                    softbodies[i].boundingBoxTopLeft.y < softbodies[j].boundingBoxBtmRight.y &&
+                    softbodies[i].boundingBoxBtmRight.y > softbodies[j].boundingBoxTopLeft.y) && i != j) {
+                    performSoftbodyCollision(&softbodies[i], &softbodies[j]);
+                }
             }
         }
 
@@ -80,11 +91,30 @@ int main (int argc, char *argv[]) {
                     SDL_RenderDrawLineF(renderer, softbodies[i].nodes[softbodies[i].edgeNodeIndexes[j]].center.x, softbodies[i].nodes[softbodies[i].edgeNodeIndexes[j]].center.y, softbodies[i].nodes[softbodies[i].edgeNodeIndexes[0]].center.x, softbodies[i].nodes[softbodies[i].edgeNodeIndexes[0]].center.y);
                 }
             }
-            SDL_RenderDrawRect(renderer, &(SDL_Rect){softbodies[i].boundingBoxTopLeft.x, softbodies[i].boundingBoxTopLeft.y, softbodies[i].boundingBoxBtmRight.x-softbodies[i].boundingBoxTopLeft.x, softbodies[i].boundingBoxBtmRight.y-softbodies[i].boundingBoxTopLeft.y});
+            //SDL_RenderDrawRectF(renderer, &(SDL_FRect){softbodies[i].boundingBoxTopLeft.x, softbodies[i].boundingBoxTopLeft.y, softbodies[i].boundingBoxBtmRight.x-softbodies[i].boundingBoxTopLeft.x, softbodies[i].boundingBoxBtmRight.y-softbodies[i].boundingBoxTopLeft.y});
         }
 
         SDL_SetRenderDrawColor(renderer, 200, 200, 200, 255);
         SDL_RenderDrawLine(renderer, 0, FLOOR, SCREEN_WIDTH, FLOOR);
+
+        /*
+        // DRAW NODES
+        for (int i = 0; i < softbodyCount; i++) {
+            for (int j = 0; j < softbodies[i].nodesCount; j++) {
+                SDL_RenderDrawRect(renderer, &(SDL_Rect){(int)softbodies[i].nodes[j].center.x-(int)softbodies[i].nodes[j].halfSideLen, 
+                                                         (int)softbodies[i].nodes[j].center.y-(int)softbodies[i].nodes[j].halfSideLen,
+                                                         softbodies[i].nodes[j].halfSideLen*2, softbodies[i].nodes[j].halfSideLen*2});
+            }
+        }
+
+        // DRAW SPRINGS
+        for (int i = 0; i < softbodyCount; i++) {
+            for (int j = 0; j < softbodies[i].springsCount; j++) {
+                SDL_RenderDrawLine(renderer, (int)softbodies[i].springs[j].node1->center.x, (int)softbodies[i].springs[j].node1->center.y, (int)softbodies[i].springs[j].node2->center.x, (int)softbodies[i].springs[j].node2->center.y);
+            }
+        }
+            */
+        
 
         SDL_RenderPresent(renderer);
         SDL_Delay(10); // eh good enough

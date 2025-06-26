@@ -13,7 +13,7 @@ inline float magnitude(vector2_t vec) {
 
 inline vector2_t normalize(vector2_t vec) {
     float mag = magnitude(vec);
-    if (mag < 0.0001f)
+    if (mag < MIN_DIF)
         return (vector2_t){1, 0};
     return (vector2_t){vec.x / mag, vec.y / mag};
 }

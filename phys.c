@@ -38,21 +38,55 @@ void applyForcesWithGrav(node_t *node) {
     node->accelleration.y = 0;
 }
 
-        /* I DINT WNAT TO HAVE THIS IN MAIN LOOP SO ITS HERE
-        // DRAW NODES
-        
-        for (int i = 0; i < softbodyCount; i++) {
-            for (int j = 0; j < softbodies[i].nodesCount; j++) {
-                SDL_RenderDrawRect(renderer, &(SDL_Rect){(int)softbodies[i].nodes[j].center.x-(int)softbodies[i].nodes[j].halfSideLen, 
-                                                         (int)softbodies[i].nodes[j].center.y-(int)softbodies[i].nodes[j].halfSideLen,
-                                                         softbodies[i].nodes[j].halfSideLen*2, softbodies[i].nodes[j].halfSideLen*2});
+bool pointInsideObject(vector2_t *pointToCheck, softbody_t *bodyToCheck) {
+    bool inside = false;
+    for (int i = 1; i < bodyToCheck->edgeNodeCount; i++) {
+        float ax = bodyToCheck->nodes[bodyToCheck->edgeNodeIndexes[i]].center.x;
+        float ay = bodyToCheck->nodes[bodyToCheck->edgeNodeIndexes[i]].center.y;
+        float bx = bodyToCheck->nodes[bodyToCheck->edgeNodeIndexes[i-1]].center.x;
+        float by = bodyToCheck->nodes[bodyToCheck->edgeNodeIndexes[i-1]].center.y;
+        if (pointToCheck->x == ax && pointToCheck->y == ay) {
+            return true;
+        }
+        if ((ay > pointToCheck->y) != (by > pointToCheck->y)) {
+            float slope = (pointToCheck->x - ax) * (by - ay) - (bx - ax) * (pointToCheck->y - ay);
+            if ((slope < MIN_DIF && slope > 0) || (slope > -MIN_DIF && slope < 0)) {
+                return true;
+            }
+            if ((slope < MIN_DIF) != (by < ay)) {
+                inside ^= 1;
             }
         }
+    }
+    return inside;
+}
 
-        // DRAW SPRINGS
-        for (int i = 0; i < softbodyCount; i++) {
-            for (int j = 0; j < softbodies[i].springsCount; j++) {
-                SDL_RenderDrawLine(renderer, (int)softbodies[i].springs[j].node1->center.x, (int)softbodies[i].springs[j].node1->center.y, (int)softbodies[i].springs[j].node2->center.x, (int)softbodies[i].springs[j].node2->center.y);
+void performSoftbodyCollision(softbody_t *body1, softbody_t *body2) {
+    for (int i = 0; i < body1->nodesCount; i++) {
+        if (body1->nodes[i].center.x > body2->boundingBoxTopLeft.x &&
+            body1->nodes[i].center.x < body2->boundingBoxBtmRight.x &&
+            body1->nodes[i].center.y > body2->boundingBoxTopLeft.y &&
+            body1->nodes[i].center.y < body2->boundingBoxBtmRight.y) {
+            if (pointInsideObject(&body1->nodes[i].center, body2)) {
+                int closestk;
+                float distance = SCREEN_WIDTH; // good enough
+                for (int k = 0; k < body2->edgeNodeCount; k++) {
+                    float dist = distanceTo(body1->nodes[i].center, body2->nodes[body2->edgeNodeIndexes[k]].center);
+                    if (dist < distance) {
+                        distance = dist;
+                        closestk = k;
+                    }
+                }
+                vector2_t direction = (vector2_t){body1->nodes[i].center.x - body1->nodes[body2->edgeNodeIndexes[closestk]].center.x, body1->nodes[i].center.y - body1->nodes[body2->edgeNodeIndexes[closestk]].center.y};
+                direction = normalize(direction);
+                float force = REPEL_FORCE * (distance);
+                body1->nodes[i].accelleration.x += -direction.x*force;
+                body1->nodes[i].accelleration.y += -direction.y*force;
+                body1->nodes[i].velocity.x = 0;
+                body1->nodes[i].velocity.y = 0;
             }
         }
-        */
+    }
+}
+
+        

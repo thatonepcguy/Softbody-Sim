@@ -4,19 +4,23 @@
 
 #define SCREEN_WIDTH 1280
 #define SCREEN_HEIGHT 720
-#define GRAVITY 0.04
-#define FLOOR SCREEN_HEIGHT-80
+#define GRAVITY 0.04f
+#define FLOOR SCREEN_HEIGHT
 
-#define STIFFNESS 0.6
-#define DAMP_COEF 0.7
+#define REPEL_FORCE 1.0f
+
+#define STIFFNESS 1.0f
+#define DAMP_COEF 0.7f
 
 #define ROWS 10
 #define COLS 10
-#define SPACING 30.0
+#define SPACING 30.0f
 #define OFFSETX 100
 #define OFFSETY 100
 
 #define FRICTION 0.9f
+
+#define MIN_DIF 0.0001f
 
 typedef struct {
     float x;
