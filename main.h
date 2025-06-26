@@ -1,16 +1,17 @@
 #pragma once
 #include <SDL2/SDL.h>
+#include <stdbool.h>
 
 #define SCREEN_WIDTH 1280
 #define SCREEN_HEIGHT 720
-#define GRAVITY 0.1
+#define GRAVITY 0.04
 #define FLOOR SCREEN_HEIGHT-80
 
-#define STIFFNESS 0.9
-#define DAMP_COEF 0.01
+#define STIFFNESS 0.6
+#define DAMP_COEF 0.7
 
 #define ROWS 10
-#define COLS 3
+#define COLS 10
 #define SPACING 30.0
 #define OFFSETX 100
 #define OFFSETY 100
@@ -25,6 +26,7 @@ typedef struct {
     vector2_t velocity;
     vector2_t accelleration;
     vector2_t center;
+    bool fixed;
     int halfSideLen;
 } node_t;
 

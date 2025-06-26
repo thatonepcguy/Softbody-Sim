@@ -22,9 +22,9 @@ void calculateSpringForces(spring_t *spring) {
 
 void applyForcesWithGrav(node_t *node) {
     // APPLY GRAVITY
-    node->accelleration.y += GRAVITY;
     node->accelleration.x /= node->mass;
     node->accelleration.y /= node->mass;
+    node->accelleration.y += GRAVITY;
     node->velocity.x += node->accelleration.x;
     node->velocity.y += node->accelleration.y;
     node->center.x += node->velocity.x;

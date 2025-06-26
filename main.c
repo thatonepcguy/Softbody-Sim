@@ -53,7 +53,8 @@ int main (int argc, char *argv[]) {
 
         // UPDATE NODES
         for (int i = 0; i < nodesCount; i++) {
-            applyForcesWithGrav(&nodes[i]);
+            if (!nodes[i].fixed)
+                applyForcesWithGrav(&nodes[i]);
         }
 
         // Draw
