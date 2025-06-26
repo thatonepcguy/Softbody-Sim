@@ -16,10 +16,27 @@
 #define OFFSETX 100
 #define OFFSETY 100
 
+#define FRICTION 0.9f
+
 typedef struct {
     float x;
     float y;
 } vector2_t;
+
+typedef struct {
+    union {
+        int x;
+        int r;
+    };
+    union {
+        int y;
+        int g;
+    };
+    union {
+        int z;
+        int b;
+    };
+} vector3I_t;
 
 typedef struct {
     int mass;
@@ -41,6 +58,13 @@ typedef struct {
 
 typedef struct {
     spring_t *springs;
+    unsigned int springsCount;
     node_t *nodes;
+    unsigned int nodesCount;
+    unsigned int *edgeNodeIndexes;
+    unsigned int edgeNodeCount;
+    vector3I_t color;
+    vector2_t boundingBoxTopLeft;
+    vector2_t boundingBoxBtmRight;
 } softbody_t;
 

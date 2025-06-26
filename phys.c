@@ -27,8 +27,8 @@ void applyForcesWithGrav(node_t *node) {
     node->accelleration.y += GRAVITY;
     node->velocity.x += node->accelleration.x;
     node->velocity.y += node->accelleration.y;
-    node->center.x += node->velocity.x;
-    node->center.y += node->velocity.y;
+    node->center.x += node->velocity.x * FRICTION;
+    node->center.y += node->velocity.y * FRICTION;
     if (node->center.y > FLOOR) {
         node->center.y = FLOOR;
         node->velocity.x = 0;
@@ -37,3 +37,22 @@ void applyForcesWithGrav(node_t *node) {
     node->accelleration.x = 0;
     node->accelleration.y = 0;
 }
+
+        /* I DINT WNAT TO HAVE THIS IN MAIN LOOP SO ITS HERE
+        // DRAW NODES
+        
+        for (int i = 0; i < softbodyCount; i++) {
+            for (int j = 0; j < softbodies[i].nodesCount; j++) {
+                SDL_RenderDrawRect(renderer, &(SDL_Rect){(int)softbodies[i].nodes[j].center.x-(int)softbodies[i].nodes[j].halfSideLen, 
+                                                         (int)softbodies[i].nodes[j].center.y-(int)softbodies[i].nodes[j].halfSideLen,
+                                                         softbodies[i].nodes[j].halfSideLen*2, softbodies[i].nodes[j].halfSideLen*2});
+            }
+        }
+
+        // DRAW SPRINGS
+        for (int i = 0; i < softbodyCount; i++) {
+            for (int j = 0; j < softbodies[i].springsCount; j++) {
+                SDL_RenderDrawLine(renderer, (int)softbodies[i].springs[j].node1->center.x, (int)softbodies[i].springs[j].node1->center.y, (int)softbodies[i].springs[j].node2->center.x, (int)softbodies[i].springs[j].node2->center.y);
+            }
+        }
+        */
