@@ -6,11 +6,11 @@
 #define GRAVITY 0.1
 #define FLOOR SCREEN_HEIGHT-80
 
-#define STIFFNESS 0.5
-#define DAMP_COEF 0.3
+#define STIFFNESS 0.9
+#define DAMP_COEF 0.01
 
-#define ROWS 5
-#define COLS 10
+#define ROWS 10
+#define COLS 3
 #define SPACING 30.0
 #define OFFSETX 100
 #define OFFSETY 100
