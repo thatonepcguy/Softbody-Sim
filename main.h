@@ -8,6 +8,8 @@
 #define FLOOR SCREEN_HEIGHT
 
 #define REPEL_FORCE 1.0f
+#define SELF_REPEL_FORCE 10.0f
+#define SELF_COLLISION_RADIUS 3
 
 #define STIFFNESS 1.0f
 #define DAMP_COEF 0.7f

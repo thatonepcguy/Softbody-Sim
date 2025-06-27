@@ -89,4 +89,15 @@ void performSoftbodyCollision(softbody_t *body1, softbody_t *body2) {
     }
 }
 
-        
+void performSelfCollision(node_t *node1, node_t *node2) {
+    float dist = distanceTo(node1->center, node2->center);
+
+    // CALCULATE A DIRECTION VECTOR
+    vector2_t direction = (vector2_t){node1->center.x - node2->center.x, node1->center.y - node2->center.y};
+    direction = normalize(direction);
+
+    float force = SELF_REPEL_FORCE * (dist);
+
+    node2->accelleration.x += -direction.x*force;
+    node2->accelleration.y += -direction.y*force;
+}

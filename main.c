@@ -23,14 +23,17 @@ int main (int argc, char *argv[]) {
 
     // SOFTBODY 1
     
-    unsigned int softbodyCount = 3;
+    unsigned int softbodyCount = 6;
     softbody_t *softbodies;
     
     softbodies = malloc(sizeof(softbody_t)*softbodyCount);
     
-    initSoftbody(softbodies, 0, 5, 10, 20, 300, 600, DAMP_COEF, STIFFNESS, (vector3I_t){100, 255, 255});
-    initSoftbody(softbodies, 1, 5, 10, 20, 300, 400, DAMP_COEF, STIFFNESS, (vector3I_t){255, 100, 255});
-    initSoftbody(softbodies, 2, 5, 10, 20, 300, 200, DAMP_COEF, STIFFNESS, (vector3I_t){255, 255, 100});
+    initSoftbody(softbodies, 0, 5, 20, 20, 50, 600, DAMP_COEF, STIFFNESS, (vector3I_t){255, 255, 100});
+    initSoftbody(softbodies, 1, 5, 20, 20, 450, 600, DAMP_COEF, STIFFNESS, (vector3I_t){255, 100, 255});
+    initSoftbody(softbodies, 2, 5, 20, 20, 850, 600, DAMP_COEF, STIFFNESS, (vector3I_t){255, 100, 100});
+    initSoftbody(softbodies, 3, 5, 20, 20, 250, 450, DAMP_COEF, STIFFNESS, (vector3I_t){100, 255, 255});
+    initSoftbody(softbodies, 4, 5, 20, 20, 650, 450, DAMP_COEF, STIFFNESS, (vector3I_t){100, 255, 100});
+    initSoftbody(softbodies, 5, 5, 20, 20, 450, 300, DAMP_COEF, STIFFNESS, (vector3I_t){100, 100, 255});
     
     bool close = 0;
     while (!close) {
@@ -59,6 +62,18 @@ int main (int argc, char *argv[]) {
         for (int i = 0; i < softbodyCount; i++) {
             for (int j = 0; j < softbodies[i].springsCount; j++) {
                 calculateSpringForces(&softbodies[i].springs[j]);
+            }
+        }
+
+        // DO SELF COLLISION SHIT
+        // peak programming
+        for (int i = 0; i < softbodyCount; i++) {
+            for (int j = 0; j < softbodies[i].nodesCount; j++) {
+                for (int k = 0; k < softbodies[i].nodesCount; k++) {
+                    if (j != k && distanceTo(softbodies[i].nodes[j].center, softbodies[i].nodes[k].center) < SELF_COLLISION_RADIUS){
+                        performSelfCollision(&softbodies[i].nodes[j], &softbodies[i].nodes[k]);
+                    } 
+                }
             }
         }
         
@@ -114,6 +129,7 @@ int main (int argc, char *argv[]) {
             }
         }
             */
+            
         
 
         SDL_RenderPresent(renderer);
