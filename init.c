@@ -10,7 +10,7 @@ void initPointBlock(int rows, int cols, float spacing, float offsetx, float offs
             int i = r * cols + c;
             nodes[i] = (node_t){0};
             nodes[i].halfSideLen    = 1;
-            nodes[i].mass           = 5;
+            nodes[i].mass           = 6;
             nodes[i].center.x       = c * spacing + offsetx;
             nodes[i].center.y       = r * spacing + offsety;
         }
@@ -56,11 +56,23 @@ void initSpringBlock(int rows, int cols, float spacing, float dampCoef, float st
             }
         }
     }
+    springs[si].dampCoef = dampCoef;
+    springs[si].restLength = distanceTo(nodes[0].center, nodes[rows*cols-1].center);
+    springs[si].stiffness = stiffness*0.5;
+    springs[si].node1 = &nodes[0];
+    springs[si].node2 = &nodes[rows*cols-1];
+    si++;
+    springs[si].dampCoef = dampCoef;
+    springs[si].restLength = distanceTo(nodes[cols].center, nodes[rows*cols-1-cols].center);
+    springs[si].stiffness = stiffness*0.5;
+    springs[si].node1 = &nodes[cols-1];
+    springs[si].node2 = &nodes[rows*cols-cols];
+    si++;
 }
 
 void initSoftbody(softbody_t *softbodies, int index, int rows, int cols, int spacing, int offsetX, int offsetY, float dampCoef, float stiffness, vector3I_t color) {
     softbodies[index].nodesCount = rows * cols;
-    softbodies[index].springsCount = (rows - 1) * cols + rows * (cols - 1) + 2 * (rows - 1) * (cols - 1);
+    softbodies[index].springsCount = (rows - 1) * cols + rows * (cols - 1) + 2 * (rows - 1) * (cols - 1) + 2/*for corner springs*/;
 
     // NODES
     softbodies[index].nodes = malloc(sizeof(node_t)*softbodies[index].nodesCount); 
